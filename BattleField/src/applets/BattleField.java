@@ -5,6 +5,7 @@ import java.awt.*;
 import java.awt.event.*;
 
 import bots.*;
+import items.GQ;
 import javax.swing.JFrame;
 import utils.*;
 import surface.*;
@@ -27,264 +28,213 @@ import surface.*;
  * @author L. Simon, Univ. Paris Sud, 2008
  *
  */
-
 public class BattleField extends Applet
-    implements Runnable, MouseListener, MouseMotionListener
-{
+		implements Runnable, MouseListener, MouseMotionListener {
+
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-
 	Surface surface; // The surface that contains the objects...
-	
 	// Those constants are hard constants... Why? I don't know.
 	static final public float MAXX = 10000F; // Size of the battlefield, in float (not pixels)
 	static final public float MAXY = 7500F;
-	
 	static final public int PREF_VIEWER_XSIZE = 800; // size in pixels (in x, the y is automatically deduced)
-
 	// Viewer variables
-    float viewer_scale; // Ratio from size of surface to size of viewer
-    int viewer_xsize;
-    int viewer_ysize;
+	float viewer_scale; // Ratio from size of surface to size of viewer
+	int viewer_xsize;
+	int viewer_ysize;
+	// Canvas for double buffering
+	Image buffer_canvasimage;
+	Graphics buffer_canvas; // Where to draw (off-screen buffer)
+	Graphics viewer_canvas; // What the user actually see (on-screen buffer)
+	/**
+	 * Thread that sleeps and update the screen.
+	 */
+	private Thread update;
 
-    // Canvas for double buffering
-    Image buffer_canvasimage;
-    Graphics buffer_canvas; // Where to draw (off-screen buffer)
-    Graphics viewer_canvas; // What the user actually see (on-screen buffer)
-    
+	// Very simple constructor
+	public BattleField() {
+		viewer_scale = MAXX / PREF_VIEWER_XSIZE;
+	}
 
-    /**
-     * Thread that sleeps and update the screen.
-     */
-    private Thread update;
+	public void init() {
+		super.init();
 
-    
-    // Very simple constructor
-    public BattleField()
-    {
-        viewer_scale = MAXX/PREF_VIEWER_XSIZE;
-    }
-    
- 	public void init()
-    {
-        super.init();
-        
-        viewer_xsize = PREF_VIEWER_XSIZE; // size in pixels
-        viewer_ysize = (int)(MAXY/viewer_scale); // The y axe is automatically computed
-        
-        resize(viewer_xsize, viewer_ysize);
-        buffer_canvasimage = createImage(viewer_xsize, viewer_ysize);
-        buffer_canvas = buffer_canvasimage.getGraphics();
-        viewer_canvas = this.getGraphics();
-        
-        addMouseListener(this);
-        addMouseMotionListener(this);
+		viewer_xsize = PREF_VIEWER_XSIZE; // size in pixels
+		viewer_ysize = (int) (MAXY / viewer_scale); // The y axe is automatically computed
 
-        initSurface();
-        initBots();
-        initBelettes();
-    }
+		resize(viewer_xsize, viewer_ysize);
+		buffer_canvasimage = createImage(viewer_xsize, viewer_ysize);
+		buffer_canvas = buffer_canvasimage.getGraphics();
+		viewer_canvas = this.getGraphics();
 
+		addMouseListener(this);
+		addMouseMotionListener(this);
 
-    /**
-     * Called ones to init the surface. This is where
-     * all objects attached to the surface should be loaded.
-     * Dynamic objects like bots and bullet are handled elsewhere.
-     */
-    public void initSurface() {
-        surface = new Surface(viewer_xsize,viewer_ysize,viewer_scale);   	
-    }
-    
-    
-    /**
-     * Called ones to init all your bots.
-     */
-    public void initBots() {
-    	// TODO
-    }
-    
-    /**
-     * Called ones to init all your belettes structures.
-     */
-    public void initBelettes() {
-    	// TODO
-    }
-    
-    public boolean handleEvent(Event event)
-    {
-        boolean returnValue = false;
-        return returnValue;
-    }
+		initSurface();
+		initBots();
+	}
 
-    public void start()
-    {
-        if(update == null)
-        {
-            update = new Thread(this);
-            update.start();
-        }
-    }
+	/**
+	 * Called ones to init the surface. This is where
+	 * all objects attached to the surface should be loaded.
+	 * Dynamic objects like bots and bullet are handled elsewhere.
+	 */
+	public void initSurface() {
+		surface = new Surface(viewer_xsize, viewer_ysize, viewer_scale);
+	}
 
-    public void stop()
-    {
-        update = null;
-    }
+	/**
+	 * Called ones to init all your bots.
+	 */
+	public void initBots() {
+		// TODO
+	}
 
-    /* 
-     * This is the main loop of the game. Sleeping, then updating positions then redrawing
-     * If you want a constant framerate, you should measure how much you'll have to sleep
-     * depending on the time eated by updates functions.
-     * 
-     * @see java.lang.Runnable#run()
-     */
-    public void run()
-    {
-        do
-        {
-        	updateBelettes();
-            updateBots();
-            repaint();
-            try
-            {
-                Thread.sleep(33);
-            }
-            catch(InterruptedException _ex) { }
-        } while(true);
-    }
+	public boolean handleEvent(Event event) {
+		boolean returnValue = false;
+		return returnValue;
+	}
 
-    // Use very simple double buffering technique...
-    /**
-     * This is a very simple double buffering technique.
-     * Drawing are done offscreen, in the buffer_canvasimage canvas.
-     * Ones all drawings are done, we copy the whole canvas to 
-     * the actual viewed canvas, viewer_canvas.
-     * Thus the player will only see a very fast update of its window.
-     * No flickering.
-     * 
-     */
-    private void showbuffer()
-    {
-        viewer_canvas.drawImage(buffer_canvasimage, 0, 0, this);
-    }
+	public void start() {
+		if (update == null) {
+			update = new Thread(this);
+			update.start();
+		}
+	}
 
-    /* 
-     * Called by repaint, to paint all the offscreen surface.
-     * We erase everything, then redraw each components.
-     * 
-     * @see java.awt.Container#paint(java.awt.Graphics)
-     */
-    public void paint(Graphics g)
-    {
-    	// 1. We erase everything
-        buffer_canvas.setColor(Color.lightGray); // Background color
-        buffer_canvas.fillRect(0, 0, viewer_xsize, viewer_ysize);
-        
-        // 2. We draw the surface (and its objects)
-        surface.draw(buffer_canvas);
-        buffer_canvas.setColor(Color.black);
-        buffer_canvas.drawRect(0, 0, viewer_xsize - 1, viewer_ysize - 1);
-        
-        // 3. TODO: Draw the bots in their position/direction
-        
-        // 4. TODO: Draw the bullets / Special Effects.
-        
-        // Draws the line for the demo.
-        // TODO: you should delete this...
-        if ( (pointA.x > -1) && (pointB.x > -1) ) {
-			gui_string = "Il va falloir modifier tout cela pour en faire un jeu... [";
-        	if (surface.cansee(pointA, pointB)) {
-        		buffer_canvas.setColor(Color.green);
-        		gui_string += "A voit B";
-        	} else {
-        		buffer_canvas.setColor(Color.red);
-        		gui_string += "A ne voit pas B";
-        	}
-        	gui_string +="]";
-            buffer_canvas.drawLine((int)pointA.x, (int)pointA.y, (int)pointB.x, (int)pointB.y);
-        }
-        
-        drawHUD();
-        showbuffer();
-    }
+	public void stop() {
+		update = null;
+	}
 
-    
-    /**
-     * string printed in the simple hud. For debugging...
-     */
-    String gui_string = "";
-    /**
-     * Very simple GUI.. Just print the infos string on the bottom of the screen, in a rectangle.
-     */
-    private void drawHUD() {
-    	buffer_canvas.setColor(Color.red);
-    	buffer_canvas.drawRect(20,viewer_ysize-23,viewer_xsize-41,20);
-    	buffer_canvas.drawChars(gui_string.toCharArray(), 0, Math.min(80,gui_string.length()), 22, viewer_ysize-7);
-    }
-    
-    
-    /**
-     * Must update bullets positions and handles damages to bots...
-     */
-    public void updateBelettes() {
-    	// TODO: nothing here yet
-    }
-    
-    /**
-     * Must update bots position / decisions / health
-     * This is where your AI will be called.
-     * 
-     */
-    public void updateBots()
-    {
-    	// TODO: You have to update all your bots here.
-   }
+	/*
+	 * This is the main loop of the game. Sleeping, then updating positions then redrawing
+	 * If you want a constant framerate, you should measure how much you'll have to sleep
+	 * depending on the time eated by updates functions.
+	 *
+	 * @see java.lang.Runnable#run()
+	 */
+	public void run() {
+		do {
+			updateBots();
+			repaint();
+			try {
+				Thread.sleep(33);
+			} catch (InterruptedException _ex) {
+			}
+		} while (true);
+	}
 
-  
-    // Simply repaint the battle field... Called every frame...
-    public void update(Graphics g)
-    {
-        paint(g);
-    }
+	// Use very simple double buffering technique...
+	/**
+	 * This is a very simple double buffering technique.
+	 * Drawing are done offscreen, in the buffer_canvasimage canvas.
+	 * Ones all drawings are done, we copy the whole canvas to
+	 * the actual viewed canvas, viewer_canvas.
+	 * Thus the player will only see a very fast update of its window.
+	 * No flickering.
+	 *
+	 */
+	private void showbuffer() {
+		viewer_canvas.drawImage(buffer_canvasimage, 0, 0, this);
+	}
 
-    
-    
-    public static void main(String args[])
-    {
-        BattleField app = new BattleField();
+	/*
+	 * Called by repaint, to paint all the offscreen surface.
+	 * We erase everything, then redraw each components.
+	 *
+	 * @see java.awt.Container#paint(java.awt.Graphics)
+	 */
+	public void paint(Graphics g) {
+		// 1. We erase everything
+		buffer_canvas.setColor(Color.lightGray); // Background color
+		buffer_canvas.fillRect(0, 0, viewer_xsize, viewer_ysize);
 
-        JFrame window = new JFrame("BattleField");
-        window.setContentPane(app);
+		// 2. We draw the surface (and its objects)
+		surface.draw(buffer_canvas);
+		buffer_canvas.setColor(Color.black);
+		buffer_canvas.drawRect(0, 0, viewer_xsize - 1, viewer_ysize - 1);
+
+		GQ gq1 = new GQ(100, (viewer_ysize - 1) / 2);
+		gq1.draw(buffer_canvas);
+
+		GQ gq2 = new GQ((viewer_xsize - 1) - 100, (viewer_ysize - 1) / 2);
+		gq2.draw(buffer_canvas);
+
+		// 3. TODO: Draw the bots in their position/direction
+
+		drawHUD();
+		showbuffer();
+	}
+	/**
+	 * string printed in the simple hud. For debugging...
+	 */
+	String gui_string = "";
+
+	/**
+	 * Very simple GUI.. Just print the infos string on the bottom of the screen, in a rectangle.
+	 */
+	private void drawHUD() {
+		buffer_canvas.setColor(Color.red);
+		buffer_canvas.drawRect(20, viewer_ysize - 23, viewer_xsize - 41, 20);
+		buffer_canvas.drawChars(gui_string.toCharArray(), 0, Math.min(80, gui_string.length()), 22, viewer_ysize - 7);
+	}
+
+	/**
+	 * Must update bots position / decisions / health
+	 * This is where your AI will be called.
+	 *
+	 */
+	public void updateBots() {
+		// TODO: You have to update all your bots here.
+	}
+
+	// Simply repaint the battle field... Called every frame...
+	public void update(Graphics g) {
+		paint(g);
+	}
+
+	public static void main(String args[]) {
+		BattleField app = new BattleField();
+
+		JFrame window = new JFrame("BattleField");
+		window.setContentPane(app);
 		window.setVisible(true);
 		window.setSize(800, 640);
 
-        app.init();
-        app.start();
+		app.init();
+		app.start();
 
-	    window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    }
+		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	}
+	// Two point2D to memorize mouse gestures (pointA first click, pointB second click)
+	private Vector2d pointA = new Vector2d(-1, -1);
+	private Vector2d pointB = new Vector2d(-1, -1);
 
+	// Those methods have to be there... Even if they are empty.
+	public void mouseClicked(MouseEvent e) {
+	}
 
-    // Two point2D to memorize mouse gestures (pointA first click, pointB second click)
-    private Vector2d pointA = new Vector2d(-1,-1);
-    private Vector2d pointB = new Vector2d(-1,-1);
+	public void mouseEntered(MouseEvent e) {
+	}
 
-    // Those methods have to be there... Even if they are empty.
-	public void mouseClicked(MouseEvent e) {}
-	public void mouseEntered(MouseEvent e) {}
-	public void mouseExited(MouseEvent e) {}
-	public void mousePressed(MouseEvent e) {}
-	public void mouseDragged(MouseEvent e) {}
+	public void mouseExited(MouseEvent e) {
+	}
 
-	
+	public void mousePressed(MouseEvent e) {
+	}
+
+	public void mouseDragged(MouseEvent e) {
+	}
+
 	/* Here we memorize the mouse position to draw lines where points can see eachother.
 	 * TODO: you must handle mouse events in your game.
 	 * @see java.awt.event.MouseListener#mouseReleased(java.awt.event.MouseEvent)
 	 */
 	public void mouseReleased(MouseEvent e) {
 		pointA.x = e.getX();
-		pointA.y = e.getY();		
+		pointA.y = e.getY();
 	}
 
 	/* TODO: use this method your own way.
@@ -296,5 +246,4 @@ public class BattleField extends Applet
 			pointB.y = e.getY();
 		}
 	}
-
 }
