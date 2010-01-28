@@ -33,20 +33,6 @@ public class Surface {
 		this.wxsize = wxsize;
 		this.wysize = wysize;
 		objects = new Vector<PolylineObject>();
-
-		PolylineObject ob1 = new PolylineObject(new Vector2d(100F,200F),this);
-		ob1.addNode(new Vector2d(100F,250F));
-		ob1.addNode(new Vector2d(200F,250F));
-		ob1.addNode(new Vector2d(200F,200F));
-		ob1.fixObject();
-		objects.add(ob1);
-
-		PolylineObject ob2 = new PolylineObject(new Vector2d(300F,500F),this);
-		ob2.addNode(new Vector2d(300F,800F));
-		ob2.addNode(new Vector2d(320F,800F));
-		ob2.addNode(new Vector2d(320F,500F));
-		ob2.fixObject();
-		objects.add(ob2);
 	}
 
 	/**
