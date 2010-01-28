@@ -257,12 +257,12 @@ public class BattleField extends Applet
         JFrame window = new JFrame("BattleField");
         window.setContentPane(app);
 		window.setVisible(true);
+		window.setSize(800, 640);
 
         app.init();
         app.start();
 
 	    window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		window.setSize(500, 500);
     }
 
 
