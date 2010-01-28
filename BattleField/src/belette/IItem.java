@@ -5,7 +5,7 @@ import utils.*;
 
 import java.awt.*;
 /**
- * Interface (a modifier suivant vos envies) permettant de gérer les items dans le jeu
+ * Interface (a modifier suivant vos envies) permettant de g√©rer les items dans le jeu
  * 
  * @author L. Simon, Univ. Paris Sud, 2008
  *
@@ -23,29 +23,29 @@ public interface IItem {
 	public void setRespawnTime(int frames); 
 
 	/**
-	 * Ajoute des coordonnées possibles pour apparaitre sur la carte
-	 * après getRespawnTime() secondes une fois récupéré
+	 * Ajoute des coordonn√©es possibles pour apparaitre sur la carte
+	 * apr√®s getRespawnTime() secondes une fois r√©cup√©r√©
 	 * @param x
 	 * @param y
 	 */
 	public void addCoordRespawn(int x, int y);
 	
 	/**
-	 * @return Les coordonnées de l'item, ou -1,-1 si pas sur la carte par ex.
+	 * @return Les coordonnÔøΩes de l'item, ou -1,-1 si pas sur la carte par ex.
 	 */
 	public Vector2d getCoord();
 	
 	/**
-	 * On va représenter les item en rond... Pour les collisions sur la carte,
+	 * On va repr√©senter les item en rond... Pour les collisions sur la carte,
 	 * on a besoin du rayon de l'item
-	 * @return le rayon (en coordonnées de cartes) de l'item
+	 * @return le rayon (en coordonn√©es de cartes) de l'item
 	 */
 	public float itemRadius();
 	
 	/**
-	 * Permet d'appeler les fonctions adéquates pour modifier le bot
-	 * Vous pouvez le modifier pour appeler cette fonction à l'envers,
-	 * depuis bot avec une méthode captureItem(IItem item) dans bot...
+	 * Permet d'appeler les fonctions ad√©quates pour modifier le bot
+	 * Vous pouvez le modifier pour appeler cette fonction √† l'envers,
+	 * depuis bot avec une m√©thode captureItem(IItem item) dans bot...
 	 * A vous de voir...
 	 * Il faut lancer un timer pour faire renaitre l'item au bout d'un certain temps...
 	 * @param bot
@@ -53,7 +53,7 @@ public interface IItem {
 	public void capturedByBot(IBot bot);
 	
 	/**
-	 * Affiche l'item sur le dessin... A vos idées !
+	 * Affiche l'item sur le dessin... A vos id√©es !
 	 * @param g
 	 */
 	public void draw(Graphics g);
@@ -64,7 +64,7 @@ public interface IItem {
 	public String toString();
 	
 	/**
-	 * Mise à jour éventuelle après chaque frame (Récupéré ? disparaitre ? Apparaitre ? Dégrader ?)
+	 * Mise √† jour √©ventuelle apr√®s chaque frame (R√©cup√©r√© ? disparaitre ? Apparaitre ? D√©grader ?)
 	 */
 	public void computeNextFrame();
 	

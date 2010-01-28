@@ -6,7 +6,7 @@ import utils.Vector2d;
 
 /**
  * Petite interface "indicative" de ce qu'il peut y avoir dans un bot.
- * Il faut aussi gérer l'ensemble des bots du jeu dans une structure à part.
+ * Il faut aussi g√™rer l'ensemble des bots du jeu dans une structure √† part.
  *  
  * @author L. Simon, Univ. Paris Sud, 2008
  *
@@ -14,19 +14,19 @@ import utils.Vector2d;
 public interface IBot {
 	
 	/**
-	 * @return Les coordonnées du bot, ou -1,-1 si pas sur la carte par ex.
+	 * @return Les coordonn√©es du bot, ou -1,-1 si pas sur la carte par ex.
 	 */
 	public Vector2d getCoord();
 	
 	/**
-	 * On va représenter les bots en rond... Pour les collisions sur la carte,
+	 * On va repr√©senter les bots en rond... Pour les collisions sur la carte,
 	 * on a besoin du rayon du bot
-	 * @return le rayon (en coordonnées de cartes) du bot
+	 * @return le rayon (en coordonn√©es de cartes) du bot
 	 */
 	public float botRadius();
 	
 	/**
-	 * Affiche le bot sur le dessin... A vos idées !
+	 * Affiche le bot sur le dessin... A vos idÔøΩes !
 	 * @param g
 	 */
 	public void draw(Graphics g);
@@ -37,8 +37,8 @@ public interface IBot {
 	public String toString();
 	
 	/**
-	 * Mise à jour IA
-	 * des decisions à prendre 
+	 * Mise √† jour IA
+	 * des decisions √† prendre
 	 */
 	public void AI();
 

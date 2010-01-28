@@ -6,8 +6,8 @@ import utils.*;
 import java.awt.*;
 
 /**
- * Interface pour donner une idée de ce que l'on peut mettre
- * pour gérer les balles
+ * Interface pour donner une id√©e de ce que l'on peut mettre
+ * pour g√©rer les balles
  * 
  * @author L. Simon, Univ. Paris Sud, 2008
  *
@@ -15,7 +15,7 @@ import java.awt.*;
 public interface IBelette {
 
 	/**
-	 * @return le bot qui a tiré cette balle
+	 * @return le bot qui a tir√© cette balle
 	 */
 	public IBot firedBy();
 	
@@ -30,7 +30,7 @@ public interface IBelette {
 	public float getPower();
 	
 	/**
-	 * @return les coordonnées de la balle
+	 * @return les coordonn√©es de la balle
 	 */
 	public Vector2d getCoords();
 	
@@ -40,29 +40,29 @@ public interface IBelette {
 	public float getRadius();
 	
 	/**
-	 * Permet de rendre compte des dégats sur le bot qui est touché
-	 * Suivant votre modélisation des bots, vous pouvez la remplacer
-	 * par une méthode IBot.hitBy(IBelette balle) dans les bots... A vous
+	 * Permet de rendre compte des d√©gats sur le bot qui est touch√©
+	 * Suivant votre mod√©lisation des bots, vous pouvez la remplacer
+	 * par une m√©thode IBot.hitBy(IBelette balle) dans les bots... A vous
 	 * de voir...
 	 * @param bot
 	 */
 	public void hitBot(IBot bot);
 	
 	/**
-	 * Juste pour dire, au cas où vous vouliez gérer d'éventuelles explosions
-	 * @param impactCoords coordonnées de l'impact
+	 * Juste pour dire, au cas o√π vous vouliez g√™rer d'√©ventuelles explosions
+	 * @param impactCoords coordonn√©es de l'impact
 	 */
 	public void hitWall(Vector2d impactCoords);
 	
 	/**
-	 * Affichage de la balle (traçante, donc)
+	 * Affichage de la balle (tra√ßante, donc)
 	 * @param g
 	 */
 	public void draw(Graphics g);
 	
 	
 	/**
-	 * Mise à jour des coordonnées de la balle, gestion des collisions, ...
+	 * Mise √† jour des coordonn√©es de la balle, gestion des collisions, ...
 	 */
 	public void computeNextFrame();
 }
