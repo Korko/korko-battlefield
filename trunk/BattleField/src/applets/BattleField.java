@@ -3,9 +3,9 @@ package applets;
 import java.applet.Applet;
 import java.awt.*;
 import java.awt.event.*;
-import java.util.ArrayList;
 
 import bots.*;
+import javax.swing.JFrame;
 import utils.*;
 import surface.*;
 
@@ -28,7 +28,9 @@ import surface.*;
  *
  */
 
-public class BattleField extends Applet implements Runnable, MouseListener, MouseMotionListener {
+public class BattleField extends Applet
+    implements Runnable, MouseListener, MouseMotionListener
+{
 	/**
 	 * 
 	 */
@@ -52,8 +54,7 @@ public class BattleField extends Applet implements Runnable, MouseListener, Mous
     Graphics buffer_canvas; // Where to draw (off-screen buffer)
     Graphics viewer_canvas; // What the user actually see (on-screen buffer)
     
-    ArrayList<IBot> bots;
-    
+
     /**
      * Thread that sleeps and update the screen.
      */
@@ -61,12 +62,13 @@ public class BattleField extends Applet implements Runnable, MouseListener, Mous
 
     
     // Very simple constructor
-    public BattleField() {
+    public BattleField()
+    {
         viewer_scale = MAXX/PREF_VIEWER_XSIZE;
-        bots = new ArrayList<IBot>();
     }
     
- 	public void init() {
+ 	public void init()
+    {
         super.init();
         
         viewer_xsize = PREF_VIEWER_XSIZE; // size in pixels
@@ -101,7 +103,6 @@ public class BattleField extends Applet implements Runnable, MouseListener, Mous
      */
     public void initBots() {
     	// TODO
-    	bots.add(new Runaway());
     }
     
     /**
@@ -111,19 +112,23 @@ public class BattleField extends Applet implements Runnable, MouseListener, Mous
     	// TODO
     }
     
-    public boolean handleEvent(Event event) {
+    public boolean handleEvent(Event event)
+    {
         boolean returnValue = false;
         return returnValue;
     }
 
-    public void start() {
-        if(update == null) {
+    public void start()
+    {
+        if(update == null)
+        {
             update = new Thread(this);
             update.start();
         }
     }
 
-    public void stop() {
+    public void stop()
+    {
         update = null;
     }
 
@@ -134,12 +139,15 @@ public class BattleField extends Applet implements Runnable, MouseListener, Mous
      * 
      * @see java.lang.Runnable#run()
      */
-    public void run() {
-        do {
+    public void run()
+    {
+        do
+        {
         	updateBelettes();
             updateBots();
             repaint();
-            try {
+            try
+            {
                 Thread.sleep(33);
             }
             catch(InterruptedException _ex) { }
@@ -156,7 +164,8 @@ public class BattleField extends Applet implements Runnable, MouseListener, Mous
      * No flickering.
      * 
      */
-    private void showbuffer() {
+    private void showbuffer()
+    {
         viewer_canvas.drawImage(buffer_canvasimage, 0, 0, this);
     }
 
@@ -166,7 +175,8 @@ public class BattleField extends Applet implements Runnable, MouseListener, Mous
      * 
      * @see java.awt.Container#paint(java.awt.Graphics)
      */
-    public void paint(Graphics g) {
+    public void paint(Graphics g)
+    {
     	// 1. We erase everything
         buffer_canvas.setColor(Color.lightGray); // Background color
         buffer_canvas.fillRect(0, 0, viewer_xsize, viewer_ysize);
@@ -177,15 +187,12 @@ public class BattleField extends Applet implements Runnable, MouseListener, Mous
         buffer_canvas.drawRect(0, 0, viewer_xsize - 1, viewer_ysize - 1);
         
         // 3. TODO: Draw the bots in their position/direction
-        for(IBot bot : bots) {
-        	bot.draw(buffer_canvas);
-        }
         
         // 4. TODO: Draw the bullets / Special Effects.
         
         // Draws the line for the demo.
         // TODO: you should delete this...
-        /*if ( (pointA.x > -1) && (pointB.x > -1) ) {
+        if ( (pointA.x > -1) && (pointB.x > -1) ) {
 			gui_string = "Il va falloir modifier tout cela pour en faire un jeu... [";
         	if (surface.cansee(pointA, pointB)) {
         		buffer_canvas.setColor(Color.green);
@@ -196,7 +203,7 @@ public class BattleField extends Applet implements Runnable, MouseListener, Mous
         	}
         	gui_string +="]";
             buffer_canvas.drawLine((int)pointA.x, (int)pointA.y, (int)pointB.x, (int)pointB.y);
-        }*/
+        }
         
         drawHUD();
         showbuffer();
@@ -229,23 +236,33 @@ public class BattleField extends Applet implements Runnable, MouseListener, Mous
      * This is where your AI will be called.
      * 
      */
-    public void updateBots() {
-    	for(IBot bot : bots) {
-    		bot.updatePosition();
-    	}
-    }
+    public void updateBots()
+    {
+    	// TODO: You have to update all your bots here.
+   }
 
+  
     // Simply repaint the battle field... Called every frame...
-    public void update(Graphics g) {
+    public void update(Graphics g)
+    {
         paint(g);
     }
 
-    public static void main(String args[]) {
-        Frame f = new Frame();
+    
+    
+    public static void main(String args[])
+    {
         BattleField app = new BattleField();
+
+        JFrame window = new JFrame("BattleField");
+        window.setContentPane(app);
+		window.setVisible(true);
+
         app.init();
         app.start();
-        f.add("Center", app);
+
+	    window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		window.setSize(500, 500);
     }
 
 
@@ -259,6 +276,7 @@ public class BattleField extends Applet implements Runnable, MouseListener, Mous
 	public void mouseExited(MouseEvent e) {}
 	public void mousePressed(MouseEvent e) {}
 	public void mouseDragged(MouseEvent e) {}
+
 	
 	/* Here we memorize the mouse position to draw lines where points can see eachother.
 	 * TODO: you must handle mouse events in your game.
