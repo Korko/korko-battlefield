@@ -5,7 +5,7 @@ import java.awt.*;
 import java.awt.event.*;
 
 import bots.*;
-import items.GQ;
+import items.*;
 import javax.swing.JFrame;
 import utils.*;
 import surface.*;
@@ -31,9 +31,7 @@ import surface.*;
 public class BattleField extends Applet
 		implements Runnable, MouseListener, MouseMotionListener {
 
-	/**
-	 * 
-	 */
+	Flag flag1;
 	private static final long serialVersionUID = 1L;
 	Surface surface; // The surface that contains the objects...
 	// Those constants are hard constants... Why? I don't know.
@@ -74,6 +72,7 @@ public class BattleField extends Applet
 
 		initSurface();
 		initBots();
+                initItems();
 	}
 
 	/**
@@ -90,6 +89,13 @@ public class BattleField extends Applet
 	 */
 	public void initBots() {
 		// TODO
+	}
+
+	/**
+	 * Called ones to init all your bots.
+	 */
+	public void initItems() {
+            flag1 = new Flag((viewer_xsize - 1) / 2,(viewer_ysize - 1) / 2, Color.CYAN);
 	}
 
 	public boolean handleEvent(Event event) {
@@ -118,6 +124,7 @@ public class BattleField extends Applet
 	public void run() {
 		do {
 			updateBots();
+                        updateItems();
 			repaint();
 			try {
 				Thread.sleep(33);
@@ -162,8 +169,8 @@ public class BattleField extends Applet
 		GQ gq2 = new GQ((viewer_xsize - 1) - 100, (viewer_ysize - 1) / 2);
 		gq2.draw(buffer_canvas);
 
+                flag1.draw(g);
 		// 3. TODO: Draw the bots in their position/direction
-
 		drawHUD();
 		showbuffer();
 	}
@@ -188,6 +195,10 @@ public class BattleField extends Applet
 	 */
 	public void updateBots() {
 		// TODO: You have to update all your bots here.
+	}
+
+        public void updateItems() {
+            
 	}
 
 	// Simply repaint the battle field... Called every frame...
