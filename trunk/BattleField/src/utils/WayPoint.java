@@ -2,33 +2,31 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package items;
+
+package utils;
 
 import java.awt.Graphics;
-import utils.Vector2d;
 
 /**
  *
  * @author Jérémy LEMESLE <jeremy.lemesle@korko.fr>
  */
-public class GQ {
-
-	static final public int SIZE = 10;
+public class WayPoint {
 	private Vector2d pos;
 
-	public GQ() {
+	public WayPoint() {
 		pos = new Vector2d(0,0);
 	}
 
-	public GQ(int x, int y) {
+	public WayPoint(float x, float y) {
 		pos = new Vector2d(x, y);
+	}
+	
+	public Vector2d getPos() {
+		return pos;
 	}
 
 	public void draw(Graphics g) {
-		g.fillOval((int) pos.x, (int) pos.y, SIZE, SIZE);
-	}
-
-	public Vector2d getPos() {
-		return pos;
+		g.drawArc((int) pos.x, (int) pos.y, 20, 20, 0, 360);
 	}
 }

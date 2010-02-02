@@ -1,6 +1,7 @@
 package bots;
 
 import java.awt.Graphics;
+import utils.Faction;
 
 import utils.Vector2d;
 
@@ -8,9 +9,16 @@ public abstract class Bot implements IBot {
 
 	protected Vector2d coords;
 	protected int size = 5;
-
-	public Bot() {
+	protected Faction f;
+	
+	public Bot(Faction f) {
+		this.f = f;
 		coords = new Vector2d(10, 10);
+	}
+
+	public Bot(Faction f, float x, float y) {
+		this.f = f;
+		coords = new Vector2d(x, y);
 	}
 
 	@Override
@@ -21,7 +29,6 @@ public abstract class Bot implements IBot {
 
 	@Override
 	public void draw(Graphics g) {
-		// TODO Auto-generated method stub
 		g.drawArc((int) coords.x, (int) coords.y, (int) botRadius(), (int) botRadius(), 0, 360);
 	}
 
