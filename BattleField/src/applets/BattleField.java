@@ -3,10 +3,11 @@ package applets;
 import java.applet.Applet;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
+import javax.swing.JFrame;
 
 import bots.*;
-import items.*;
-import javax.swing.JFrame;
+import maps.*;
 import utils.*;
 import surface.*;
 
@@ -31,36 +32,45 @@ import surface.*;
 public class BattleField extends Applet
 		implements Runnable, MouseListener, MouseMotionListener {
 
-	Flag flag1;
 	private static final long serialVersionUID = 1L;
 	Surface surface; // The surface that contains the objects...
 	// Those constants are hard constants... Why? I don't know.
 	static final public float MAXX = 10000F; // Size of the battlefield, in float (not pixels)
 	static final public float MAXY = 7500F;
-	static final public int PREF_VIEWER_XSIZE = 800; // size in pixels (in x, the y is automatically deduced)
+	
 	// Viewer variables
-	float viewer_scale; // Ratio from size of surface to size of viewer
 	int viewer_xsize;
 	int viewer_ysize;
+	int viewer_xpos;
+	int viewer_ypos;
+
 	// Canvas for double buffering
 	Image buffer_canvasimage;
 	Graphics buffer_canvas; // Where to draw (off-screen buffer)
 	Graphics viewer_canvas; // What the user actually see (on-screen buffer)
+
 	/**
 	 * Thread that sleeps and update the screen.
 	 */
 	private Thread update;
 
+	private Map map;
+	private ArrayList<Faction> factions;
+	
 	// Very simple constructor
 	public BattleField() {
-		viewer_scale = MAXX / PREF_VIEWER_XSIZE;
+		// Init the factions
+		factions = new ArrayList<Faction>();
 	}
 
+	@Override
 	public void init() {
 		super.init();
 
-		viewer_xsize = PREF_VIEWER_XSIZE; // size in pixels
-		viewer_ysize = (int) (MAXY / viewer_scale); // The y axe is automatically computed
+		viewer_xsize = (int)MAXX;
+		viewer_ysize = (int)MAXY;
+		viewer_xpos = 0;
+		viewer_ypos = 0;
 
 		resize(viewer_xsize, viewer_ysize);
 		buffer_canvasimage = createImage(viewer_xsize, viewer_ysize);
@@ -70,39 +80,29 @@ public class BattleField extends Applet
 		addMouseListener(this);
 		addMouseMotionListener(this);
 
-		initSurface();
-		initBots();
-                initItems();
+		initMap();
+		initFactions();
 	}
 
+	public void initMap() {
+		map = new ClearMap();
+	}
+	
 	/**
-	 * Called ones to init the surface. This is where
-	 * all objects attached to the surface should be loaded.
-	 * Dynamic objects like bots and bullet are handled elsewhere.
+	 * Called ones to init all your factions (bots).
 	 */
-	public void initSurface() {
-		surface = new Surface(viewer_xsize, viewer_ysize, viewer_scale);
+	public void initFactions() {
+		factions.add(new Faction(map.getGQ(1), "Est"));
+		factions.add(new Faction(map.getGQ(2), "Ouest"));
 	}
 
-	/**
-	 * Called ones to init all your bots.
-	 */
-	public void initBots() {
-		// TODO
-	}
-
-	/**
-	 * Called ones to init all your bots.
-	 */
-	public void initItems() {
-            flag1 = new Flag((viewer_xsize - 1) / 2,(viewer_ysize - 1) / 2, Color.CYAN);
-	}
-
+	@Override
 	public boolean handleEvent(Event event) {
 		boolean returnValue = false;
 		return returnValue;
 	}
 
+	@Override
 	public void start() {
 		if (update == null) {
 			update = new Thread(this);
@@ -110,6 +110,7 @@ public class BattleField extends Applet
 		}
 	}
 
+	@Override
 	public void stop() {
 		update = null;
 	}
@@ -121,6 +122,7 @@ public class BattleField extends Applet
 	 *
 	 * @see java.lang.Runnable#run()
 	 */
+	@Override
 	public void run() {
 		do {
 			updateBots();
@@ -153,27 +155,29 @@ public class BattleField extends Applet
 	 *
 	 * @see java.awt.Container#paint(java.awt.Graphics)
 	 */
+	@Override
 	public void paint(Graphics g) {
 		// 1. We erase everything
 		buffer_canvas.setColor(Color.lightGray); // Background color
 		buffer_canvas.fillRect(0, 0, viewer_xsize, viewer_ysize);
 
-		// 2. We draw the surface (and its objects)
-		surface.draw(buffer_canvas);
-		buffer_canvas.setColor(Color.black);
-		buffer_canvas.drawRect(0, 0, viewer_xsize - 1, viewer_ysize - 1);
-
-		GQ gq1 = new GQ(100, (viewer_ysize - 1) / 2);
-		gq1.draw(buffer_canvas);
-
-		GQ gq2 = new GQ((viewer_xsize - 1) - 100, (viewer_ysize - 1) / 2);
-		gq2.draw(buffer_canvas);
-
-                flag1.draw(g);
-		// 3. TODO: Draw the bots in their position/direction
-		drawHUD();
+		// 2. We draw the map (surface)
+		// TODO: Caution when the map is resized or cropped
+		map.draw(buffer_canvas, 0, 0, viewer_xsize, viewer_ysize);
+		
+		drawBots();
+		//drawHUD();
 		showbuffer();
 	}
+	
+	private void drawBots() {
+		for(Faction f : factions) {
+			for(Bot b : f.getBots()) {
+				b.draw(buffer_canvas);
+			}
+		}
+	}
+	
 	/**
 	 * string printed in the simple hud. For debugging...
 	 */
@@ -194,7 +198,9 @@ public class BattleField extends Applet
 	 *
 	 */
 	public void updateBots() {
-		// TODO: You have to update all your bots here.
+		for(Faction f : factions) {
+			f.update();
+		}
 	}
 
         public void updateItems() {
@@ -202,6 +208,7 @@ public class BattleField extends Applet
 	}
 
 	// Simply repaint the battle field... Called every frame...
+	@Override
 	public void update(Graphics g) {
 		paint(g);
 	}
@@ -219,23 +226,29 @@ public class BattleField extends Applet
 
 		window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
+
 	// Two point2D to memorize mouse gestures (pointA first click, pointB second click)
 	private Vector2d pointA = new Vector2d(-1, -1);
 	private Vector2d pointB = new Vector2d(-1, -1);
 
 	// Those methods have to be there... Even if they are empty.
+	@Override
 	public void mouseClicked(MouseEvent e) {
 	}
 
+	@Override
 	public void mouseEntered(MouseEvent e) {
 	}
 
+	@Override
 	public void mouseExited(MouseEvent e) {
 	}
 
+	@Override
 	public void mousePressed(MouseEvent e) {
 	}
 
+	@Override
 	public void mouseDragged(MouseEvent e) {
 	}
 
@@ -243,6 +256,7 @@ public class BattleField extends Applet
 	 * TODO: you must handle mouse events in your game.
 	 * @see java.awt.event.MouseListener#mouseReleased(java.awt.event.MouseEvent)
 	 */
+	@Override
 	public void mouseReleased(MouseEvent e) {
 		pointA.x = e.getX();
 		pointA.y = e.getY();
@@ -251,6 +265,7 @@ public class BattleField extends Applet
 	/* TODO: use this method your own way.
 	 * @see java.awt.event.MouseMotionListener#mouseMoved(java.awt.event.MouseEvent)
 	 */
+	@Override
 	public void mouseMoved(MouseEvent e) {
 		if (pointA.x > -1) { // pointA has been defined
 			pointB.x = e.getX();
