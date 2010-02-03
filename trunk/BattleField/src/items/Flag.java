@@ -34,17 +34,15 @@ public class Flag implements IItem{
 
     }
 
-    @Override
     public int getRespawnTime() {
         return respawn_time;
     }
 
-    @Override
+    
     public void setRespawnTime(int frames) {
         respawn_time = frames;
     }
 
-    @Override
     public void addCoordRespawn(int x, int y) {
         pos = new Vector2d(x,y);
     }

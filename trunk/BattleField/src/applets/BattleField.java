@@ -30,20 +30,22 @@ import maps.*;
 public class BattleField extends Applet
     implements Runnable, MouseListener, MouseMotionListener
 {
-	/**
-	 *
-	 */
-	private static final long serialVersionUID = 1L;
+    /**
+     *
+     */
+    private static final long serialVersionUID = 1L;
+
 
 	Map map; // The surface that contains the objects...
 
-	// Those constants are hard constants... Why? I don't know.
-	static final public float MAXX = 10000F; // Size of the battlefield, in float (not pixels)
-	static final public float MAXY = 7500F;
 
-	static final public int PREF_VIEWER_XSIZE = 800; // size in pixels (in x, the y is automatically deduced)
+    // Those constants are hard constants... Why? I don't know.
+    static final public float MAXX = 10000F; // Size of the battlefield, in float (not pixels)
+    static final public float MAXY = 7500F;
 
-	// Viewer variables
+    static final public int PREF_VIEWER_XSIZE = 800; // size in pixels (in x, the y is automatically deduced)
+
+    // Viewer variables
     float viewer_scale; // Ratio from size of surface to size of viewer
     int viewer_xsize;
     int viewer_ysize;
@@ -61,13 +63,11 @@ public class BattleField extends Applet
 
 
     // Very simple constructor
-    public BattleField()
-    {
+    public BattleField() {
         viewer_scale = MAXX/PREF_VIEWER_XSIZE;
     }
 
- 	public void init()
-    {
+    public void init() {
         super.init();
 
         viewer_xsize = PREF_VIEWER_XSIZE; // size in pixels
