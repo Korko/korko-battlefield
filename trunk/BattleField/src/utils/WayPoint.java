@@ -13,7 +13,7 @@ import java.awt.Graphics;
  */
 public class WayPoint {
 	private Vector2d pos;
-
+	
 	public WayPoint() {
 		pos = new Vector2d(0,0);
 	}
