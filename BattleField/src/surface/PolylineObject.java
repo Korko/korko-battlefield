@@ -1,10 +1,10 @@
 package surface;
 
 import utils.Vector2d;
-import java.util.*;
+import java.util.Vector;
 import java.awt.Graphics;
 import java.awt.Polygon;
-import java.lang.reflect.*;
+import maps.*;
 
 /**
  * Allow to handle any polyline object on the map... No Splines yet... And 2D :(
@@ -25,7 +25,7 @@ public class PolylineObject {
 	 * @param AnchorPoint The global coordonates of the anchor point in the surface
 	 * @param scale a scaling factor applied to all local coordinates
 	 */
-	public PolylineObject(Vector2d AnchorPoint, Surface onsurface) {
+	public PolylineObject(Vector2d AnchorPoint, Map onsurface) {
 		nbPoints = 0;
 		visible = true;
 		globalCoordPoints = new Vector<Vector2d>();

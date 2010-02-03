@@ -1,23 +1,18 @@
 package bots;
 
 import java.awt.Graphics;
-import utils.Faction;
-
 import utils.Vector2d;
 
-public abstract class Bot implements IBot {
+public class Bot implements IBot {
 
 	protected Vector2d coords;
 	protected int size = 5;
-	protected Faction f;
 	
-	public Bot(Faction f) {
-		this.f = f;
+	public Bot() {
 		coords = new Vector2d(10, 10);
 	}
 
-	public Bot(Faction f, float x, float y) {
-		this.f = f;
+	public Bot(float x, float y) {
 		coords = new Vector2d(x, y);
 	}
 
@@ -36,5 +31,15 @@ public abstract class Bot implements IBot {
 	public Vector2d getCoord() {
 		// TODO Auto-generated method stub
 		return coords;
+	}
+
+	@Override
+	public void AI() {
+
+	}
+
+	@Override
+	public void updatePosition() {
+		
 	}
 }

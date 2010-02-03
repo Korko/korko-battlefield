@@ -4,10 +4,9 @@ import java.applet.Applet;
 import java.awt.*;
 import java.awt.event.*;
 
-import bots.*;
 import javax.swing.JFrame;
 import utils.*;
-import surface.*;
+import maps.*;
 
 /**
  * Very simple applet to handle fundamentals of A.I. in games.
@@ -36,7 +35,7 @@ public class BattleField extends Applet
 	 */
 	private static final long serialVersionUID = 1L;
 
-	Surface surface; // The surface that contains the objects...
+	Map map; // The surface that contains the objects...
 
 	// Those constants are hard constants... Why? I don't know.
 	static final public float MAXX = 10000F; // Size of the battlefield, in float (not pixels)
@@ -82,7 +81,7 @@ public class BattleField extends Applet
         addMouseListener(this);
         addMouseMotionListener(this);
 
-        initSurface();
+        initMap();
         initBots();
     }
 
@@ -92,8 +91,8 @@ public class BattleField extends Applet
      * all objects attached to the surface should be loaded.
      * Dynamic objects like bots and bullet are handled elsewhere.
      */
-    public void initSurface() {
-        surface = new Surface(viewer_xsize,viewer_ysize,viewer_scale);
+    public void initMap() {
+        map = new Map(viewer_xsize,viewer_ysize,viewer_scale);
     }
 
 
@@ -173,7 +172,7 @@ public class BattleField extends Applet
         buffer_canvas.fillRect(0, 0, viewer_xsize, viewer_ysize);
 
         // 2. We draw the surface (and its objects)
-        surface.draw(buffer_canvas);
+        map.draw(buffer_canvas);
         buffer_canvas.setColor(Color.black);
         buffer_canvas.drawRect(0, 0, viewer_xsize - 1, viewer_ysize - 1);
 
@@ -185,7 +184,7 @@ public class BattleField extends Applet
         // TODO: you should delete this...
         if ( (pointA.x > -1) && (pointB.x > -1) ) {
 			gui_string = "Il va falloir modifier tout cela pour en faire un jeu... [";
-        	if (surface.cansee(pointA, pointB)) {
+        	if (map.cansee(pointA, pointB)) {
         		buffer_canvas.setColor(Color.green);
         		gui_string += "A voit B";
         	} else {
