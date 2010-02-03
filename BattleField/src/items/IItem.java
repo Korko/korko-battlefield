@@ -4,34 +4,12 @@ import bots.*;
 import utils.*;
 
 import java.awt.*;
-/**
- * Interface (a modifier suivant vos envies) permettant de gérer les items dans le jeu
- * 
- * @author L. Simon, Univ. Paris Sud, 2008
- *
- */
+
+
 public interface IItem {
 
 	/**
-	 * @return le temps en frames de respawn pour cet item
-	 */
-	public int getRespawnTime();
-	/**
-	 * Modifie le temps que met un item pour apparaitre sur la carte
-	 * @param time temps en frames
-	 */
-	public void setRespawnTime(int frames); 
-
-	/**
-	 * Ajoute des coordonnées possibles pour apparaitre sur la carte
-	 * après getRespawnTime() secondes une fois récupéré
-	 * @param x
-	 * @param y
-	 */
-	public void addCoordRespawn(int x, int y);
-	
-	/**
-	 * @return Les coordonn�es de l'item, ou -1,-1 si pas sur la carte par ex.
+	 * @return Les coordonnées de l'item, ou -1,-1 si pas sur la carte par ex.
 	 */
 	public Vector2d getCoord();
 	
