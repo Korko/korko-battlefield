@@ -28,7 +28,7 @@ public class Map {
 	 * @param wysize
 	 * @param scale
 	 */
-	public Map(int wxsize, int wysize, float scale) {
+	public Map(int wxsize, int wysize) {
 		this.wxsize = wxsize;
 		this.wysize = wysize;
 		objects = new Vector<PolylineObject>();
