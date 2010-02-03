@@ -87,8 +87,7 @@ public class BattleField extends Applet
 
 	@Override
 	public boolean handleEvent(Event event) {
-		boolean returnValue = false;
-		return returnValue;
+		return false;
 	}
 
 	@Override
@@ -176,6 +175,7 @@ public class BattleField extends Applet
 		//drawHUD();
 		showbuffer();
 	}
+	
 	/**
 	 * string printed in the simple hud. For debugging...
 	 */
