@@ -18,4 +18,6 @@ public interface IEnJeu {
     public void draw(Graphics g);
 
     public boolean is_affiche();
+
+    public void init();
 }
