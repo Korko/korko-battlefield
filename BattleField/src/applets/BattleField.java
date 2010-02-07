@@ -3,6 +3,7 @@ package applets;
 import java.applet.Applet;
 import java.awt.*;
 import java.awt.event.*;
+import java.util.ArrayList;
 
 import javax.swing.JFrame;
 import utils.*;
@@ -34,6 +35,7 @@ public class BattleField extends Applet
 	 */
 	private static final long serialVersionUID = 1L;
 	Map map; // The surface that contains the objects...
+        ArrayList<IEnJeu> list_en_jeu = new ArrayList<IEnJeu>();
 
 	// Those constants are hard constants... Why? I don't know.
 	static final public int XSIZE = 850; // Size of the battlefield, in float (not pixels)
@@ -50,8 +52,7 @@ public class BattleField extends Applet
 	private Thread update;
 
 	// Very simple constructor
-	public BattleField() {
-	}
+	public BattleField() { }
 
 	@Override
 	public void init() {
@@ -67,6 +68,8 @@ public class BattleField extends Applet
 
 		initMap();
 		initBots();
+                for(int i = 0; i < list_en_jeu.size(); i++)
+                    list_en_jeu.get(i).init();
 	}
 
 	/**
