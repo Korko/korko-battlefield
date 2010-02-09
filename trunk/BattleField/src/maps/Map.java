@@ -4,6 +4,7 @@ import utils.Vector2d;
 import java.util.*;
 import java.awt.*;
 import surface.*;
+import utils.WayPoint;
 
 /**
  * A simple class to handle the surface itself. All objects are polylines.
@@ -17,6 +18,8 @@ public class Map {
 	// All objects on the surface are recorded in this vector of polylines.
 	private Vector<PolylineObject> objects; // The objects on the surface
 
+	private Vector<WayPoint> wp;
+
 	/**
 	 * Well, right now the objects are built "by hands". May by the first
 	 * thing to do would be to put polylines objects in a map, and read the
@@ -26,7 +29,6 @@ public class Map {
 	 *
 	 * @param wxsize
 	 * @param wysize
-	 * @param scale
 	 */
 	public Map(int wxsize, int wysize) {
 		this.wxsize = wxsize;
