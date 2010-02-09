@@ -27,32 +27,26 @@ import maps.*;
  * @author L. Simon, Univ. Paris Sud, 2008
  *
  */
-public class BattleField extends Applet
-		implements Runnable, MouseListener, MouseMotionListener {
-
-	/**
-	 *
-	 */
-	private static final long serialVersionUID = 1L;
-	Map map; // The surface that contains the objects...
-        ArrayList<IEnJeu> list_en_jeu = new ArrayList<IEnJeu>();
-
+public class BattleField extends Applet implements Runnable {
 	// Those constants are hard constants... Why? I don't know.
-	static final public int XSIZE = 850; // Size of the battlefield, in float (not pixels)
-	static final public int YSIZE = 700;
+	public static final int XSIZE = 850; // Size of the battlefield, in float (not pixels)
+	public static final int YSIZE = 700;
+	public static final int STEP = 33;
+
+	private static final long serialVersionUID = 1L;
+	private Map map; // The surface that contains the objects...
+	private ArrayList<IEnJeu> list_en_jeu = new ArrayList<IEnJeu>();
 
 	// Canvas for double buffering
-	Image buffer_canvasimage;
-	Graphics buffer_canvas; // Where to draw (off-screen buffer)
-	Graphics viewer_canvas; // What the user actually see (on-screen buffer)
+	private Image buffer_canvasimage;
+	private Graphics buffer_canvas; // Where to draw (off-screen buffer)
+	private Graphics viewer_canvas; // What the user actually see (on-screen buffer)
 
-	/**
-	 * Thread that sleeps and update the screen.
-	 */
+	// Thread that sleeps and update the screen
 	private Thread update;
 
 	// Very simple constructor
-	public BattleField() { }
+	public BattleField() { super(); }
 
 	@Override
 	public void init() {
@@ -63,13 +57,11 @@ public class BattleField extends Applet
 		buffer_canvas = buffer_canvasimage.getGraphics();
 		viewer_canvas = this.getGraphics();
 
-		addMouseListener(this);
-		addMouseMotionListener(this);
-
 		initMap();
 		initBots();
-                for(int i = 0; i < list_en_jeu.size(); i++)
-                    list_en_jeu.get(i).init();
+
+		for(int i = 0; i < list_en_jeu.size(); i++)
+			list_en_jeu.get(i).init();
 	}
 
 	/**
@@ -89,11 +81,6 @@ public class BattleField extends Applet
 	}
 
 	@Override
-	public boolean handleEvent(Event event) {
-		return false;
-	}
-
-	@Override
 	public void start() {
 		if (update == null) {
 			update = new Thread(this);
@@ -106,7 +93,7 @@ public class BattleField extends Applet
 		update = null;
 	}
 
-	/*
+	/**
 	 * This is the main loop of the game. Sleeping, then updating positions then redrawing
 	 * If you want a constant framerate, you should measure how much you'll have to sleep
 	 * depending on the time eated by updates functions.
@@ -125,7 +112,6 @@ public class BattleField extends Applet
 		} while (true);
 	}
 
-	// Use very simple double buffering technique...
 	/**
 	 * This is a very simple double buffering technique.
 	 * Drawing are done offscreen, in the buffer_canvasimage canvas.
@@ -139,7 +125,7 @@ public class BattleField extends Applet
 		viewer_canvas.drawImage(buffer_canvasimage, 0, 0, this);
 	}
 
-	/*
+	/**
 	 * Called by repaint, to paint all the offscreen surface.
 	 * We erase everything, then redraw each components.
 	 *
@@ -158,39 +144,7 @@ public class BattleField extends Applet
 
 		// 3. TODO: Draw the bots in their position/direction
 
-		// 4. TODO: Draw the bullets / Special Effects.
-
-		// Draws the line for the demo.
-		// TODO: you should delete this...
-		if ((pointA.x > -1) && (pointB.x > -1)) {
-			gui_string = "Il va falloir modifier tout cela pour en faire un jeu... [";
-			if (map.cansee(pointA, pointB)) {
-				buffer_canvas.setColor(Color.green);
-				gui_string += "A voit B";
-			} else {
-				buffer_canvas.setColor(Color.red);
-				gui_string += "A ne voit pas B";
-			}
-			gui_string += "]";
-			buffer_canvas.drawLine((int) pointA.x, (int) pointA.y, (int) pointB.x, (int) pointB.y);
-		}
-
-		//drawHUD();
 		showbuffer();
-	}
-	
-	/**
-	 * string printed in the simple hud. For debugging...
-	 */
-	String gui_string = "";
-
-	/**
-	 * Very simple GUI.. Just print the infos string on the bottom of the screen, in a rectangle.
-	 */
-	private void drawHUD() {
-		buffer_canvas.setColor(Color.red);
-		buffer_canvas.drawRect(20, YSIZE - 23, XSIZE - 41, 20);
-		buffer_canvas.drawChars(gui_string.toCharArray(), 0, Math.min(80, gui_string.length()), 22, YSIZE - 7);
 	}
 
 	/**
@@ -219,51 +173,5 @@ public class BattleField extends Applet
 		app.start();
 
 		f.setSize(XSIZE, YSIZE);
-	}
-	
-	// Two point2D to memorize mouse gestures (pointA first click, pointB second click)
-	private Vector2d pointA = new Vector2d(-1, -1);
-	private Vector2d pointB = new Vector2d(-1, -1);
-
-	// Those methods have to be there... Even if they are empty.
-	@Override
-	public void mouseClicked(MouseEvent e) {
-	}
-
-	@Override
-	public void mouseEntered(MouseEvent e) {
-	}
-
-	@Override
-	public void mouseExited(MouseEvent e) {
-	}
-
-	@Override
-	public void mousePressed(MouseEvent e) {
-	}
-
-	@Override
-	public void mouseDragged(MouseEvent e) {
-	}
-
-	/* Here we memorize the mouse position to draw lines where points can see eachother.
-	 * TODO: you must handle mouse events in your game.
-	 * @see java.awt.event.MouseListener#mouseReleased(java.awt.event.MouseEvent)
-	 */
-	@Override
-	public void mouseReleased(MouseEvent e) {
-		pointA.x = e.getX();
-		pointA.y = e.getY();
-	}
-
-	/* TODO: use this method your own way.
-	 * @see java.awt.event.MouseMotionListener#mouseMoved(java.awt.event.MouseEvent)
-	 */
-	@Override
-	public void mouseMoved(MouseEvent e) {
-		if (pointA.x > -1) { // pointA has been defined
-			pointB.x = e.getX();
-			pointB.y = e.getY();
-		}
 	}
 }
